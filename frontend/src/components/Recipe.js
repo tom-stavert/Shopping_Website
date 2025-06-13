@@ -1,0 +1,244 @@
+import React, { useEffect, useState } from 'react';
+import AddIngredientForm from './AddIngredientForm';
+import api from '../api';
+import { Button } from 'bootstrap';
+
+const RecipeList = () => {
+  
+  const emptyIngredient = {
+    id: 0,
+    name: '',
+    quantity: 0,
+    unit: ''
+  };
+
+  const [recipes, setRecipe] = useState([]);
+  const [ToggleEditRecipe, setToggleEditRecipe] = useState(false);
+  const [recipeName, setRecipeName] = useState('');
+  const [pendingIngredients, setPendingIngredients] = useState([]);
+  const [newIngredient, setNewIngredient] = useState({...emptyIngredient});
+
+  const fetchRecipe = async () => {
+    try {
+      const response = await api.get('/recipe');
+      setRecipe(Object.values(response.data));
+    } catch (error) {
+      console.error("Error fetching ingredients", error);
+    }
+  };
+
+  const addPendingIngredients = () => {
+    if (newIngredient.name) {
+      setPendingIngredients([...pendingIngredients, newIngredient]);
+      setNewIngredient({...emptyIngredient})
+    }
+  }
+
+  const editRecipeToggle = (id, name) => {
+    setToggleEditRecipe(prev => (prev === id ? null: id));
+    setRecipeName(name);
+  };
+
+  const deleteIngredient = async(ingredient, recipeId) => {
+    try{
+      await api.post(`recipes/${recipeId}/deleteingredient`, ingredient);
+      fetchRecipe();
+    } catch (error) {
+      console.error("Error deleting ingredient", error);
+    }
+  }
+
+  const newRecipe = async() => {
+    try{
+      await api.post(`recipes/new`);
+      fetchRecipe();
+      editRecipeToggle(recipes.length, "")
+    } catch (error) {
+      console.error("Error creating recipe", error);
+    }
+  }
+
+  const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
+    if (recipe.ingredients.length == 0 && pendingIngredients.length == 0) {
+      return
+    }
+    else if (pendingIngredients.length != 0) {
+      recipe.ingredients = [...recipe.ingredients, ...pendingIngredients];
+      setPendingIngredients([])
+    }
+
+    if (recipeName) {
+      recipe.name = recipeName
+      updateRecipe(recipe.id, recipe);
+      editRecipeToggle(recipeId, recipe.name);
+    }
+  }
+
+  const handleCancelRecipeEdit = (recipe) => {
+    // If the recipe hasn't been saved, delete it
+    if (recipe.name == '') {
+      deleteRecipe(recipe.id)
+    }
+    editRecipeToggle(false, "");
+    setPendingIngredients([]);
+  }
+
+  const handleDeleteRecipe = async(recipeId) => {
+    deleteRecipe(recipeId);
+    editRecipeToggle(false, "");
+    setPendingIngredients([]);
+  }
+
+  const updateRecipe = async(recipeId, recipe) => {
+    try{
+      console.log(recipe)
+      await api.post(`recipes/${recipeId}/update`, recipe);
+      fetchRecipe();
+    } catch (error) {
+      console.error("Error updating recipe", error);
+    }
+  }
+
+  const deleteRecipe = async(recipeId) => {
+      try{
+      await api.post(`recipes/${recipeId}/delete`);
+      fetchRecipe();
+    } catch (error) {
+      console.error("Error deleting recipe", error);
+    } 
+  }
+
+  useEffect(() => {
+    fetchRecipe();
+  }, []);
+
+  return (
+    <div className="container">
+      {recipes.map((recipe, recipeId) => (
+      <div className="card border-primary" key={recipeId}>
+        <div className="card-body">
+          {ToggleEditRecipe === recipeId && (
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              value={recipeName}
+              onChange={(e) => setRecipeName(e.target.value)}
+              placeholder="Recipe Name"
+              id="recipeNameInput"
+            />
+            <label htmlFor="recipeNameInput">Recipe Name</label>            
+          </div>
+            )}
+          {ToggleEditRecipe !== recipeId && (
+          <h5 className="card-title">{ recipe.name }</h5>
+          )}
+            <table className="table table-sm">
+              <tbody>
+              {recipe.ingredients.map((ingredient, ingredientId) => (
+                <tr key={ingredientId}>
+                  <td>{ingredient.name}</td>
+                  <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
+                  {ToggleEditRecipe === recipeId && (
+                  <td>
+                    <button onClick={() => deleteIngredient(ingredient, recipe.id)} type="button" className="btn btn-danger">Delete</button>
+                  </td>
+                  )}
+                </tr>
+                ))}
+                {ToggleEditRecipe === recipeId && (             
+                  pendingIngredients.map((ingredient, pendingIngredientId) => (
+                  <tr key={pendingIngredientId}>
+                    <td>{ingredient.name}</td>
+                    <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
+                    {ToggleEditRecipe === recipeId && (
+                    <td>
+                      <button onClick={() => deleteIngredient(ingredient, recipe.id)} type="button" className="btn btn-danger">Delete</button>
+                    </td>
+                    )}
+                  </tr>
+                  )))}
+              </tbody>
+            </table>
+            {ToggleEditRecipe === recipeId && (
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <div className="form-floating">
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={newIngredient.name}
+                        onChange={(e) => 
+                          setNewIngredient((prev) => ({...prev, name:e.target.value}))
+                        }
+                        placeholder="Ingredient"
+                        id="ingredientNameInput"
+                      />
+                      <label htmlFor="ingredientNameInput">Ingredient</label>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="form-floating">
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={newIngredient.quantity}
+                        onChange={(e) => 
+                          setNewIngredient((prev) => ({...prev, quantity:e.target.value}))
+                        }
+                        placeholder="Quantity"
+                        id="ingredientQuantityInput"
+                      />
+                      <label htmlFor="ingredientQuantityInput">Quantity</label>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="form-floating">
+                      <input
+                      type="text"
+                      className="form-control"
+                        value={newIngredient.unit}
+                        onChange={(e) => 
+                          setNewIngredient((prev) => ({...prev, unit:e.target.value}))
+                        }
+                      placeholder="Unit"
+                      id="ingredientUnitInput"
+                      />
+                      <label htmlFor="ingredientUnitInput">Unit</label>
+                    </div>
+                  </td>
+                  <td>
+                    <button type="button" onClick={addPendingIngredients} className="btn">Add Ingredient</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            )}
+            <div className="text-center">
+              {ToggleEditRecipe === recipeId && (     
+                <div className="btn-group" role="group">      
+                  <button onClick={() => handleCancelRecipeEdit(recipe)} type="submit" className="btn btn-secondary">Cancel</button>
+                  <button onClick={() => handleRecipeSave(recipe, recipeId, pendingIngredients)} type="submit" className="btn btn-success">Save Changes</button>
+                  <button onClick={() => handleDeleteRecipe(recipe.id)} type="submit" className="btn btn-danger">Delete Recipe</button>
+                </div>
+              )}
+              {ToggleEditRecipe !== recipeId && (
+              <div className="btn-group" role="group">
+                <button onClick={() => editRecipeToggle(recipeId, recipe.name)} type="button" className="btn btn-secondary">Edit</button>
+                <button type="button" className="btn btn-primary">Add to shopping list</button>
+              </div>
+              )}
+            </div>
+        </div>
+      </div>
+      ))}
+      <div className="text-center">
+        <button onClick= {() => newRecipe()} className="btn btn-primary"> Add new recipe </button>
+      </div>
+    </div>
+  );
+};
+
+export default RecipeList;
