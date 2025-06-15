@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import RecipeList from './components/Recipe';
+import RecipeList from './components/RecipeList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {

@@ -17,6 +17,7 @@ const RecipeList = () => {
   const [recipeName, setRecipeName] = useState('');
   const [pendingIngredients, setPendingIngredients] = useState([]);
   const [newIngredient, setNewIngredient] = useState({...emptyIngredient});
+  const [deleteIngredients, setDeleteIngredients] = useState([])
 
   const fetchRecipe = async () => {
     try {
@@ -37,14 +38,20 @@ const RecipeList = () => {
   const editRecipeToggle = (id, name) => {
     setToggleEditRecipe(prev => (prev === id ? null: id));
     setRecipeName(name);
+    setPendingIngredients([]);
+    setDeleteIngredients([]);
   };
 
-  const deleteIngredient = async(ingredient, recipeId) => {
-    try{
-      await api.post(`recipes/${recipeId}/deleteingredient`, ingredient);
-      fetchRecipe();
-    } catch (error) {
-      console.error("Error deleting ingredient", error);
+  const handleDeleteIngredient = (ingredient, ingredientId, recipeId) => {
+    // If the deleted ingredient was a pending ingredient
+    if (ingredient.id === 0) {   
+      setPendingIngredients(pendingIngredients.filter((_, i) => i !== ingredientId));
+    }
+    // If ingredient was in recipe already, set to delete on save and remove locally
+    else {
+      console.log(recipeId)
+      setDeleteIngredients([...deleteIngredients, ingredientId]);
+      recipes[recipeId].ingredients.splice(ingredientId, 1)
     }
   }
 
@@ -59,14 +66,22 @@ const RecipeList = () => {
   }
 
   const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
+    // First remove any ingredients from recipe that were deleted
+    if (deleteIngredients) {
+      deleteIngredients.forEach(index => recipe.ingredients.splice(index, 1));
+      setDeleteIngredients([]);
+    }
+    // If the recipe has no ingredients
     if (recipe.ingredients.length == 0 && pendingIngredients.length == 0) {
       return
     }
+    // If there are pending ingredients, add to recipe
     else if (pendingIngredients.length != 0) {
       recipe.ingredients = [...recipe.ingredients, ...pendingIngredients];
       setPendingIngredients([])
     }
 
+    // If the recipe has a name, update it, save recipe, and close edit window
     if (recipeName) {
       recipe.name = recipeName
       updateRecipe(recipe.id, recipe);
@@ -80,18 +95,17 @@ const RecipeList = () => {
       deleteRecipe(recipe.id)
     }
     editRecipeToggle(false, "");
-    setPendingIngredients([]);
+    fetchRecipe();
   }
 
   const handleDeleteRecipe = async(recipeId) => {
     deleteRecipe(recipeId);
     editRecipeToggle(false, "");
-    setPendingIngredients([]);
+    fetchRecipe();
   }
 
   const updateRecipe = async(recipeId, recipe) => {
     try{
-      console.log(recipe)
       await api.post(`recipes/${recipeId}/update`, recipe);
       fetchRecipe();
     } catch (error) {
@@ -102,7 +116,6 @@ const RecipeList = () => {
   const deleteRecipe = async(recipeId) => {
       try{
       await api.post(`recipes/${recipeId}/delete`);
-      fetchRecipe();
     } catch (error) {
       console.error("Error deleting recipe", error);
     } 
@@ -141,7 +154,7 @@ const RecipeList = () => {
                   <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
                   {ToggleEditRecipe === recipeId && (
                   <td>
-                    <button onClick={() => deleteIngredient(ingredient, recipe.id)} type="button" className="btn btn-danger">Delete</button>
+                    <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipeId)} type="button" className="btn btn-danger">Delete</button>
                   </td>
                   )}
                 </tr>
@@ -153,7 +166,7 @@ const RecipeList = () => {
                     <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
                     {ToggleEditRecipe === recipeId && (
                     <td>
-                      <button onClick={() => deleteIngredient(ingredient, recipe.id)} type="button" className="btn btn-danger">Delete</button>
+                      <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="btn btn-danger">Delete</button>
                     </td>
                     )}
                   </tr>

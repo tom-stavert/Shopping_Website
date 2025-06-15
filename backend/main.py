@@ -75,10 +75,11 @@ def new_recipe():
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: int, recipe: Recipe):
     for ing in recipe.ingredients:
+        # If new ingredient, add it to the ingredients database (need to add logic to check for duplicate ingredients here)
         if ing.id == 0:
             ing.id = len(ingredients_db)+1
             new_ingredient = copy.copy(ing)
-            new_ingredient.quantity=None # remove quantity from ingredient (set to default None)
+            new_ingredient.quantity=None # remove quantity from ingredient being copied to db (set to default None)
             ingredients_db[len(ingredients_db)+1] = new_ingredient
 
     recipe_db[recipe_id] = recipe
