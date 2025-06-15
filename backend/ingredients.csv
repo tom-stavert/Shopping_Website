@@ -1,0 +1,10 @@
+recipe_id,ingredient_id,ingredient_name,quantity,unit
+ed50df8e-d4e6-46ea-87cd-e71be973b748,9ec0f6d7-5d5c-4235-8f9f-62689fd5c475,Beef Mince,500,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,f0be579d-9cb0-46ec-afa1-a9b50da63cbd,Chopped Tomatoes,400,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,a2ea4199-5f30-47ef-b4e5-15f9c532e12b,Onion,1,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,f2bbf6ec-825a-4188-89a2-a7d5daa0ee96,Garlic,1,
+00641878-e30d-471f-af16-f84ffe209c46,4e7c9dbd-9a68-480a-b6a6-ab021b082f0b,Flour,400,g
+00641878-e30d-471f-af16-f84ffe209c46,7cfeba7a-a159-4949-95d6-9f451808c6db,Apple,10,
+00641878-e30d-471f-af16-f84ffe209c46,709a03d8-c75f-4079-af53-adf9698ba9d4,Sugar,300,g
+c3607d65-41d2-405b-8a9c-bafbcefbb13e,ef83a329-89f3-4ae6-b35f-b58f4de14223,Flour,400,g
+c3607d65-41d2-405b-8a9c-bafbcefbb13e,b43f73ea-8468-4947-bd85-bd1e7da0c23e,Sugar,300,g

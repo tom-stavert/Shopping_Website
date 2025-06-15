@@ -49,7 +49,6 @@ const RecipeList = () => {
     }
     // If ingredient was in recipe already, set to delete on save and remove locally
     else {
-      console.log(recipeId)
       setDeleteIngredients([...deleteIngredients, ingredientId]);
       recipes[recipeId].ingredients.splice(ingredientId, 1)
     }
