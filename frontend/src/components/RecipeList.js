@@ -6,7 +6,7 @@ import { Button } from 'bootstrap';
 const RecipeList = () => {
   
   const emptyIngredient = {
-    id: 0,
+    id: '',
     name: '',
     quantity: 0,
     unit: ''
@@ -44,7 +44,7 @@ const RecipeList = () => {
 
   const handleDeleteIngredient = (ingredient, ingredientId, recipeId) => {
     // If the deleted ingredient was a pending ingredient
-    if (ingredient.id === 0) {   
+    if (ingredient.id === '') {   
       setPendingIngredients(pendingIngredients.filter((_, i) => i !== ingredientId));
     }
     // If ingredient was in recipe already, set to delete on save and remove locally

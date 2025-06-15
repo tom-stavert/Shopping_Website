@@ -4,15 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 import copy
+from uuid import uuid4
 
 class Ingredient(BaseModel):
-    id: int
+    id: str
     name: str 
     quantity:Optional[int] = None
     unit: Optional[str] = None
 
 class Recipe(BaseModel):
-    id: int
+    id: str
     name: str
     ingredients: List[Ingredient]
 
@@ -30,25 +31,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+id1 = str(uuid4())
+id2 = str(uuid4())
+id3 = str(uuid4())
+id4 = str(uuid4())
+id5 = str(uuid4())
+id6 = str(uuid4())
+
 ingredients_db = {
-    1: Ingredient(id= 1, name="Beef Mince", unit="g"),
-    2: Ingredient(id= 2, name="Chopped Tomatoes", unit="g"),
-    3: Ingredient(id= 3, name="Onion"),
-    4: Ingredient(id= 4, name="Flour", unit="g"),
-    5: Ingredient(id= 5, name="Apple"),
-    6: Ingredient(id= 6, name="Sugar", unit="g")
+    id1: Ingredient(id= id1, name="Beef Mince", unit="g"),
+    id2: Ingredient(id= id2, name="Chopped Tomatoes", unit="g"),
+    id3: Ingredient(id= id3, name="Onion"),
+    id4: Ingredient(id= id4, name="Flour", unit="g"),
+    id5: Ingredient(id= id5, name="Apple"),
+    id6: Ingredient(id= id6, name="Sugar", unit="g")
 }
 
+id7 = str(uuid4())
+id8 = str(uuid4())
+
 recipe_db = {
-    1:  Recipe(id= 1, name="Bolognese", ingredients=[
-            copy.copy(ingredients_db[1]),
-            copy.copy(ingredients_db[2]),
-            copy.copy(ingredients_db[3])
+    id7:  Recipe(id= id7, name="Bolognese", ingredients=[
+            copy.copy(ingredients_db[id1]),
+            copy.copy(ingredients_db[id2]),
+            copy.copy(ingredients_db[id3])
 ]),
-    2:  Recipe(id= 2, name="Apple Pie", ingredients=[
-            copy.copy(ingredients_db[4]),
-            copy.copy(ingredients_db[5]),
-            copy.copy(ingredients_db[6])
+    id8:  Recipe(id= id8, name="Apple Pie", ingredients=[
+            copy.copy(ingredients_db[id4]),
+            copy.copy(ingredients_db[id5]),
+            copy.copy(ingredients_db[id6])
 ])
 }
 
@@ -63,29 +74,30 @@ def get_ingredients():
     return recipe_db
 
 @app.post("/recipes/{recipe_id}/deleteingredient")
-def delete_ingredient(recipe_id: int, ingredient: Ingredient):
+def delete_ingredient(recipe_id: str, ingredient: Ingredient):
     recipe = recipe_db.get(recipe_id)
     recipe.ingredients = [ing for ing in recipe.ingredients if ing.id != ingredient.id]
 
 @app.post("/recipes/new")
 def new_recipe():
-    new_id = len(recipe_db)+1
+    new_id = str(uuid4())
     recipe_db[new_id] = Recipe(id=new_id, name="", ingredients =[])
 
 @app.post("/recipes/{recipe_id}/update")
-def update_recipe(recipe_id: int, recipe: Recipe):
+def update_recipe(recipe_id: str, recipe: Recipe):
     for ing in recipe.ingredients:
         # If new ingredient, add it to the ingredients database (need to add logic to check for duplicate ingredients here)
-        if ing.id == 0:
-            ing.id = len(ingredients_db)+1
+        if ing.id == '':
+            new_id = str(uuid4())
+            ing.id = new_id
             new_ingredient = copy.copy(ing)
             new_ingredient.quantity=None # remove quantity from ingredient being copied to db (set to default None)
-            ingredients_db[len(ingredients_db)+1] = new_ingredient
+            ingredients_db[new_id] = new_ingredient
 
     recipe_db[recipe_id] = recipe
 
 @app.post("/recipes/{recipe_id}/delete")
-def delete_recipe(recipe_id: int):
+def delete_recipe(recipe_id: str):
     del recipe_db[recipe_id]
 
 if __name__ == "__main__":
