@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import AddIngredientForm from './AddIngredientForm';
+import { Link } from 'react-router-dom'
 import api from '../api';
-import { Button } from 'bootstrap';
 
-const RecipeList = () => {
+const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
   
   const emptyIngredient = {
     id: '',
@@ -12,17 +11,15 @@ const RecipeList = () => {
     unit: ''
   };
 
-  const [recipes, setRecipe] = useState({});
   const [ToggleEditRecipe, setToggleEditRecipe] = useState(false);
   const [recipeName, setRecipeName] = useState('');
   const [pendingIngredients, setPendingIngredients] = useState([]);
   const [newIngredient, setNewIngredient] = useState({...emptyIngredient});
-  const [shoppingList, setShoppingList] = useState([])
 
   const fetchRecipe = async () => {
     try {
       const response = await api.get('/recipe');
-      setRecipe(response.data);
+      setRecipes(response.data);
     } catch (error) {
       console.error("Error fetching ingredients", error);
     }
@@ -48,7 +45,7 @@ const RecipeList = () => {
     }
     // If ingredient was in recipe already, set to delete on save and remove locally
     else {
-      setRecipe(prevRecipes => {
+      setRecipes(prevRecipes => {
         const updatedIngredients = prevRecipes[recipeId].ingredients.filter((_, i) => i !== ingredientId);
         return {
           ...prevRecipes,
@@ -138,6 +135,11 @@ const RecipeList = () => {
 
   return (
     <div className="container">
+      {shoppingList?.length > 0 && (
+      <div className="row">
+        <Link to="/shopping-list" className="btn btn-success">Create shopping list!</Link>
+      </div>
+      )}
       {Object.values(recipes).map((recipe, recipeId) => (
       <div className="card border-primary" key={recipeId}>
         <div className="card-body">
