@@ -37,6 +37,7 @@ def write_db():
                     ingredient.unit
                 ])
 
+# Read csv files to populate recipe_db and ingredients_db when backend server is started
 def read_db():
     with open("recipes.csv", mode='r') as csvfile:
         recipe_db = {}
@@ -80,18 +81,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-recipe_db, ingredients_db = read_db()
-
+# Get list of recipes
 @app.get("/recipe")
 def get_ingredients():
     return recipe_db
 
+# Add a new (empty) recipe to the database
 @app.post("/recipes/new")
 def new_recipe():
     new_id = str(uuid4())
     recipe_db[new_id] = Recipe(id=new_id, name="", ingredients =[])
     write_db()
 
+# Update an existing recipe given its ID and a recipe object (passed from frontend)
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
     for ing in recipe.ingredients:
@@ -106,10 +108,12 @@ def update_recipe(recipe_id: str, recipe: Recipe):
     recipe_db[recipe_id] = recipe
     write_db()
 
+#Delete an existing recipe by its ID
 @app.post("/recipes/{recipe_id}/delete")
 def delete_recipe(recipe_id: str):
     del recipe_db[recipe_id]
     write_db()
 
 if __name__ == "__main__":
+    recipe_db, ingredients_db = read_db()
     uvicorn.run(app, host="0.0.0.0", port=8000)
