@@ -16,7 +16,7 @@ class Recipe(BaseModel):
     name: str
     ingredients: List[Ingredient]
 
-
+# Writing to db when new recipes are made, recipes are deleted, or recipes are updated
 def write_db():
     with open("recipes.csv", mode='w', newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -85,12 +85,6 @@ recipe_db, ingredients_db = read_db()
 @app.get("/recipe")
 def get_ingredients():
     return recipe_db
-
-@app.post("/recipes/{recipe_id}/deleteingredient")
-def delete_ingredient(recipe_id: str, ingredient: Ingredient):
-    recipe = recipe_db.get(recipe_id)
-    recipe.ingredients = [ing for ing in recipe.ingredients if ing.id != ingredient.id]
-    write_db()
 
 @app.post("/recipes/new")
 def new_recipe():
