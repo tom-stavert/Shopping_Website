@@ -12,17 +12,16 @@ const RecipeList = () => {
     unit: ''
   };
 
-  const [recipes, setRecipe] = useState([]);
+  const [recipes, setRecipe] = useState({});
   const [ToggleEditRecipe, setToggleEditRecipe] = useState(false);
   const [recipeName, setRecipeName] = useState('');
   const [pendingIngredients, setPendingIngredients] = useState([]);
   const [newIngredient, setNewIngredient] = useState({...emptyIngredient});
-  const [deleteIngredients, setDeleteIngredients] = useState([])
 
   const fetchRecipe = async () => {
     try {
       const response = await api.get('/recipe');
-      setRecipe(Object.values(response.data));
+      setRecipe(response.data);
     } catch (error) {
       console.error("Error fetching ingredients", error);
     }
@@ -39,20 +38,27 @@ const RecipeList = () => {
     setToggleEditRecipe(prev => (prev === id ? null: id));
     setRecipeName(name);
     setPendingIngredients([]);
-    setDeleteIngredients([]);
   };
 
   const handleDeleteIngredient = (ingredient, ingredientId, recipeId) => {
-    // If the deleted ingredient was a pending ingredient
+    // If the deleted ingredient was a pending ingredient, remove it
     if (ingredient.id === '') {   
-      setPendingIngredients(pendingIngredients.filter((_, i) => i !== ingredientId));
+      setPendingIngredients(prev => prev.filter((_, i) => i !== ingredientId));
     }
     // If ingredient was in recipe already, set to delete on save and remove locally
     else {
-      setDeleteIngredients([...deleteIngredients, ingredientId]);
-      recipes[recipeId].ingredients.splice(ingredientId, 1)
+      setRecipe(prevRecipes => {
+        const updatedIngredients = prevRecipes[recipeId].ingredients.filter((_, i) => i !== ingredientId);
+        return {
+          ...prevRecipes,
+          [recipeId]: {
+            ...prevRecipes[recipeId],
+            ingredients: updatedIngredients
+          }
+        };
+      });
     }
-  }
+  };
 
   const newRecipe = async() => {
     try{
@@ -65,12 +71,8 @@ const RecipeList = () => {
   }
 
   const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
-    // First remove any ingredients from recipe that were deleted
-    if (deleteIngredients) {
-      deleteIngredients.forEach(index => recipe.ingredients.splice(index, 1));
-      setDeleteIngredients([]);
-    }
-    // If the recipe has no ingredients
+
+    // If there are no ingredients, do nothing
     if (recipe.ingredients.length == 0 && pendingIngredients.length == 0) {
       return
     }
@@ -126,7 +128,7 @@ const RecipeList = () => {
 
   return (
     <div className="container">
-      {recipes.map((recipe, recipeId) => (
+      {Object.values(recipes).map((recipe, recipeId) => (
       <div className="card border-primary" key={recipeId}>
         <div className="card-body">
           {ToggleEditRecipe === recipeId && (
@@ -153,7 +155,7 @@ const RecipeList = () => {
                   <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
                   {ToggleEditRecipe === recipeId && (
                   <td>
-                    <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipeId)} type="button" className="btn btn-danger">Delete</button>
+                    <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger">Delete</button>
                   </td>
                   )}
                 </tr>
