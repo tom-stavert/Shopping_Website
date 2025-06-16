@@ -152,7 +152,8 @@ const RecipeList = () => {
               {recipe.ingredients.map((ingredient, ingredientId) => (
                 <tr key={ingredientId}>
                   <td>{ingredient.name}</td>
-                  <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
+                  <td className="text-end">{ingredient.quantity}</td>
+                  <td className="text-start"> {ingredient.unit} </td>
                   {ToggleEditRecipe === recipeId && (
                   <td>
                     <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger">Delete</button>
@@ -189,6 +190,7 @@ const RecipeList = () => {
                         }
                         placeholder="Ingredient"
                         id="ingredientNameInput"
+                        autoComplete="off"
                       />
                       <label htmlFor="ingredientNameInput">Ingredient</label>
                     </div>
@@ -204,6 +206,7 @@ const RecipeList = () => {
                         }
                         placeholder="Quantity"
                         id="ingredientQuantityInput"
+                        autoComplete="off"
                       />
                       <label htmlFor="ingredientQuantityInput">Quantity</label>
                     </div>
@@ -219,6 +222,7 @@ const RecipeList = () => {
                         }
                       placeholder="Unit"
                       id="ingredientUnitInput"
+                      autoComplete="off"
                       />
                       <label htmlFor="ingredientUnitInput">Unit</label>
                     </div>
@@ -230,21 +234,33 @@ const RecipeList = () => {
               </tbody>
             </table>
             )}
-            <div className="text-center">
               {ToggleEditRecipe === recipeId && (     
-                <div className="btn-group" role="group">      
+                <div className="d-flex justify-content-between" role="group">      
                   <button onClick={() => handleCancelRecipeEdit(recipe)} type="submit" className="btn btn-secondary">Cancel</button>
                   <button onClick={() => handleRecipeSave(recipe, recipeId, pendingIngredients)} type="submit" className="btn btn-success">Save Changes</button>
                   <button onClick={() => handleDeleteRecipe(recipe.id)} type="submit" className="btn btn-danger">Delete Recipe</button>
                 </div>
               )}
               {ToggleEditRecipe !== recipeId && (
-              <div className="btn-group" role="group">
-                <button onClick={() => editRecipeToggle(recipeId, recipe.name)} type="button" className="btn btn-secondary">Edit</button>
-                <button type="button" className="btn btn-primary">Add to shopping list</button>
+              <div className="d-flex justify-content-between" role="group">
+                  <button onClick={() => editRecipeToggle(recipeId, recipe.name)} type="button" className="btn btn-secondary p-2">
+                    <img
+                      src="edit_icon.svg"
+                      alt="Edit Recipe"
+                      height="20px"
+                      width="40px"
+                    />
+                  </button>
+                  <button type="button" className="btn btn-primary p-2">
+                    <img
+                      src="plus_icon.svg"
+                      alt="Add Recipe to Shopping List"
+                      height="20px"
+                      width="40px"
+                    />
+                  </button>
               </div>
               )}
-            </div>
         </div>
       </div>
       ))}

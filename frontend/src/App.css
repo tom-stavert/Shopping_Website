@@ -45,5 +45,9 @@
 }
 
 .table {
-  margin-bottom: 0px   !important;
+  margin-bottom: 1em   !important;
+}
+
+.form-control {
+  margin-bottom: 1em
 }
