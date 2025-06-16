@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import api from '../api';
 
-const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
+const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   
   const emptyIngredient = {
     id: '',
@@ -121,11 +121,11 @@ const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
   }
 
   const updateShoppingList = (recipeId) => {
-    if (shoppingList.includes(recipeId)) {
-      setShoppingList(prev => prev.filter((i) => i !== recipeId))
+    if (addedRecipes.includes(recipeId)) {
+      setAddedRecipes(prev => prev.filter((i) => i !== recipeId))
     }
     else {
-      setShoppingList([...shoppingList, recipeId]);
+      setAddedRecipes([...addedRecipes, recipeId]);
     }
   }
 
@@ -135,7 +135,7 @@ const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
 
   return (
     <div className="container">
-      {shoppingList?.length > 0 && (
+      {addedRecipes?.length > 0 && (
       <div className="row">
         <Link to="/shopping-list" className="btn btn-success">Create shopping list!</Link>
       </div>
@@ -263,7 +263,7 @@ const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
                       width="40px"
                     />
                   </button>
-                  {!shoppingList.includes(recipe.id) && (
+                  {!addedRecipes.includes(recipe.id) && (
                   <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-primary p-2">
                     <img
                       src="plus_icon.svg"
@@ -273,7 +273,7 @@ const RecipeList = ({recipes, setRecipes, shoppingList, setShoppingList}) => {
                     />
                   </button>
                   )}
-                  {shoppingList.includes(recipe.id) && (
+                  {addedRecipes.includes(recipe.id) && (
                   <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-success p-2">
                     <img
                       src="tick_icon.svg"

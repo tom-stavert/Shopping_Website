@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App = () => {
 
   const [recipes, setRecipes] = useState({});
-  const [shoppingList, setShoppingList] = useState([]);
+  const [addedRecipes, setAddedRecipes] = useState([]);
 
   return (
     <Router>
@@ -23,8 +23,8 @@ const App = () => {
               <RecipeList 
                 recipes={recipes}
                 setRecipes={setRecipes}
-                shoppingList={shoppingList}
-                setShoppingList={setShoppingList}
+                addedRecipes={addedRecipes}
+                setAddedRecipes={setAddedRecipes}
               />
             }
           />
@@ -33,7 +33,7 @@ const App = () => {
             element={
               <ShoppingList
                 recipes={recipes}
-                shoppingList={shoppingList}
+                addedRecipes={addedRecipes}
               />
             } 
           />
