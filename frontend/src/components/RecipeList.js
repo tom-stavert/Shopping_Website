@@ -17,6 +17,7 @@ const RecipeList = () => {
   const [recipeName, setRecipeName] = useState('');
   const [pendingIngredients, setPendingIngredients] = useState([]);
   const [newIngredient, setNewIngredient] = useState({...emptyIngredient});
+  const [shoppingList, setShoppingList] = useState([])
 
   const fetchRecipe = async () => {
     try {
@@ -120,6 +121,15 @@ const RecipeList = () => {
     } catch (error) {
       console.error("Error deleting recipe", error);
     } 
+  }
+
+  const updateShoppingList = (recipeId) => {
+    if (shoppingList.includes(recipeId)) {
+      setShoppingList(prev => prev.filter((i) => i !== recipeId))
+    }
+    else {
+      setShoppingList([...shoppingList, recipeId]);
+    }
   }
 
   useEffect(() => {
@@ -251,7 +261,8 @@ const RecipeList = () => {
                       width="40px"
                     />
                   </button>
-                  <button type="button" className="btn btn-primary p-2">
+                  {!shoppingList.includes(recipe.id) && (
+                  <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-primary p-2">
                     <img
                       src="plus_icon.svg"
                       alt="Add Recipe to Shopping List"
@@ -259,6 +270,17 @@ const RecipeList = () => {
                       width="40px"
                     />
                   </button>
+                  )}
+                  {shoppingList.includes(recipe.id) && (
+                  <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-success p-2">
+                    <img
+                      src="tick_icon.svg"
+                      alt="Remove Recipe from Shopping List"
+                      height="20px"
+                      width="40px"
+                    />
+                  </button>
+                  )}
               </div>
               )}
         </div>
