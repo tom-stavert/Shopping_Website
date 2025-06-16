@@ -67,6 +67,22 @@ def read_db():
     
     return recipe_db, ingredients_db
 
+# Updates the ingredients database to add new ingredients from a list, and if the ingredients are already in the database, updates their ID to match
+def update_ingredients_db(ingredients_list):
+    for n, ing in enumerate(ingredients_list):    # For each ingredient in the new recipe
+        if ing.id == '':    # If new ingredient
+            for i, db_ing in enumerate(list(ingredients_db.values())):
+                if db_ing.name == ing.name:     # If ingredient with same name exists in the database
+                    ingredients_list[n].id = db_ing.id      # Update id of ingredient to match database  value
+                    break
+                elif i == len(ingredients_db)-1:    # Else, if the end of the ingredients database is reached and no match has been found
+                    new_id = str(uuid4())
+                    ingredients_list[n].id = new_id
+                    new_ingredient = copy.copy(ing)
+                    new_ingredient.quantity=None # remove quantity from ingredient being copied to db (set to default None)
+                    ingredients_db[new_id] = new_ingredient
+    return ingredients_list
+
 app = FastAPI()
 
 origins = [
@@ -96,15 +112,7 @@ def new_recipe():
 # Update an existing recipe given its ID and a recipe object (passed from frontend)
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
-    for ing in recipe.ingredients:
-        # If new ingredient, add it to the ingredients database (need to add logic to check for duplicate ingredients here)
-        if ing.id == '':
-            new_id = str(uuid4())
-            ing.id = new_id
-            new_ingredient = copy.copy(ing)
-            new_ingredient.quantity=None # remove quantity from ingredient being copied to db (set to default None)
-            ingredients_db[new_id] = new_ingredient
-
+    recipe.ingredients = update_ingredients_db(recipe.ingredients)
     recipe_db[recipe_id] = recipe
     write_db()
 
