@@ -11,6 +11,12 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
     unit: ''
   };
 
+  const emptyRecipe = {
+    id: '',
+    name: '',
+    ingredients: []
+  }
+
   const [ToggleEditRecipe, setToggleEditRecipe] = useState(false);
   const [recipeName, setRecipeName] = useState('');
   const [pendingIngredients, setPendingIngredients] = useState([]);
@@ -58,14 +64,10 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
     }
   };
 
-  const newRecipe = async() => {
-    try{
-      await api.post(`recipes/new`);
-      fetchRecipe();
-      editRecipeToggle(recipes.length, "")
-    } catch (error) {
-      console.error("Error creating recipe", error);
-    }
+  const newRecipe = (recipes) => {
+    const newRecipe = emptyRecipe;
+    recipes[''] = {...newRecipe, id:'new'}
+    editRecipeToggle("new", "");
   }
 
   const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
@@ -89,16 +91,14 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   }
 
   const handleCancelRecipeEdit = (recipe) => {
-    // If the recipe hasn't been saved, delete it
-    if (recipe.name == '') {
-      deleteRecipe(recipe.id)
-    }
     editRecipeToggle(false, "");
     fetchRecipe();
   }
 
   const handleDeleteRecipe = async(recipeId) => {
-    deleteRecipe(recipeId);
+    if (recipeId !== "new") {
+      deleteRecipe(recipeId);
+    }
     editRecipeToggle(false, "");
     fetchRecipe();
   }
@@ -142,7 +142,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
       )}
       {Object.values(recipes).map((recipe, recipeId) => (
       <div className="border rounded p-4 m-4 " key={recipeId}>
-          {ToggleEditRecipe === recipeId && (
+          {ToggleEditRecipe === recipe.id && (
           <div className="">
             <input
               type="text"
@@ -155,7 +155,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
             <label htmlFor="recipeNameInput">Recipe Name</label>            
           </div>
             )}
-          {ToggleEditRecipe !== recipeId && (
+          {ToggleEditRecipe !== recipe.id && (
           <h3 className="text-center mb-4">{ recipe.name }</h3>
           )}
             <table className="table table-sm">
@@ -165,19 +165,19 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                   <td>{ingredient.name}</td>
                   <td className="text-end">{ingredient.quantity}</td>
                   <td className="text-start"> {ingredient.unit} </td>
-                  {ToggleEditRecipe === recipeId && (
+                  {ToggleEditRecipe === recipe.id && (
                   <td>
                     <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger">Delete</button>
                   </td>
                   )}
                 </tr>
                 ))}
-                {ToggleEditRecipe === recipeId && (             
+                {ToggleEditRecipe === recipe.id && (             
                   pendingIngredients.map((ingredient, pendingIngredientId) => (
                   <tr key={pendingIngredientId}>
                     <td>{ingredient.name}</td>
                     <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
-                    {ToggleEditRecipe === recipeId && (
+                    {ToggleEditRecipe === recipe.id && (
                     <td>
                       <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="btn btn-danger">Delete</button>
                     </td>
@@ -186,7 +186,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                   )))}
               </tbody>
             </table>
-            {ToggleEditRecipe === recipeId && (
+            {ToggleEditRecipe === recipe.id && (
             <table>
               <tbody>
                 <tr>
@@ -245,16 +245,16 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
               </tbody>
             </table>
             )}
-              {ToggleEditRecipe === recipeId && (     
+              {ToggleEditRecipe === recipe.id && (     
                 <div className="d-flex justify-content-between" role="group">      
                   <button onClick={() => handleCancelRecipeEdit(recipe)} type="submit" className="btn btn-secondary">Cancel</button>
                   <button onClick={() => handleRecipeSave(recipe, recipeId, pendingIngredients)} type="submit" className="btn btn-success">Save Changes</button>
                   <button onClick={() => handleDeleteRecipe(recipe.id)} type="submit" className="btn btn-danger">Delete Recipe</button>
                 </div>
               )}
-              {ToggleEditRecipe !== recipeId && (
+              {ToggleEditRecipe !== recipe.id && (
               <div className="d-flex justify-content-between" role="group">
-                  <button onClick={() => editRecipeToggle(recipeId, recipe.name)} type="button" className="btn btn-secondary p-2">
+                  <button onClick={() => editRecipeToggle(recipe.id, recipe.name)} type="button" className="btn btn-secondary p-2">
                     <img
                       src="edit_icon.svg"
                       alt="Edit Recipe"
@@ -287,7 +287,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
       </div>
       ))}
       <div className="text-center mb-4">
-        <button onClick= {() => newRecipe()} className="btn btn-primary"> Add new recipe </button>
+        <button onClick= {() => newRecipe(recipes)} className="btn btn-primary"> Add new recipe </button>
       </div>
     </div>
   );

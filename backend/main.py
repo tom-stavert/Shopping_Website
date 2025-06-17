@@ -103,15 +103,16 @@ def get_ingredients():
     return recipe_db
 
 # Add a new (empty) recipe to the database
-@app.post("/recipes/new")
-def new_recipe():
-    new_id = str(uuid4())
-    recipe_db[new_id] = Recipe(id=new_id, name="", ingredients =[])
-    write_db()
+
 
 # Update an existing recipe given its ID and a recipe object (passed from frontend)
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
+    print(recipe)
+    if recipe_id == "new":
+        recipe_id = str(uuid4())
+        recipe.id = recipe_id
+    print(recipe)
     recipe.ingredients = update_ingredients_db(recipe.ingredients)
     recipe_db[recipe_id] = recipe
     write_db()
