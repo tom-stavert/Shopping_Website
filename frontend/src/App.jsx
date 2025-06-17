@@ -12,10 +12,10 @@ const App = () => {
 
   return (
     <Router>
-      <header>
-        <h1>What's for dinner?</h1>
+      <header className="text-center">
+        <h1 className="mb-4">What's for dinner?</h1>
       </header>
-      <main>
+      <main className="flex justify-center">
         <Routes>
           <Route 
             path="/" 

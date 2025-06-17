@@ -134,17 +134,16 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="flex-1 items-center justify-center max-w-md h-screen">     
       {addedRecipes?.length > 0 && (
-      <div className="row">
-        <Link to="/shopping-list" className="btn btn-success">Create shopping list!</Link>
-      </div>
+        <div className="text-center mb-4">
+          <Link to="/shopping-list" className="btn btn-success justify-self-center">Create shopping list!</Link>
+        </div>
       )}
       {Object.values(recipes).map((recipe, recipeId) => (
-      <div className="card border-primary" key={recipeId}>
-        <div className="card-body">
+      <div className="border rounded p-4 m-4 " key={recipeId}>
           {ToggleEditRecipe === recipeId && (
-          <div className="form-floating">
+          <div className="">
             <input
               type="text"
               className="form-control"
@@ -157,7 +156,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
           </div>
             )}
           {ToggleEditRecipe !== recipeId && (
-          <h5 className="card-title">{ recipe.name }</h5>
+          <h3 className="text-center mb-4">{ recipe.name }</h3>
           )}
             <table className="table table-sm">
               <tbody>
@@ -285,10 +284,9 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                   )}
               </div>
               )}
-        </div>
       </div>
       ))}
-      <div className="text-center">
+      <div className="text-center mb-4">
         <button onClick= {() => newRecipe()} className="btn btn-primary"> Add new recipe </button>
       </div>
     </div>
