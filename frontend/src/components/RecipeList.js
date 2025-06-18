@@ -143,107 +143,85 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
       {Object.values(recipes).map((recipe, recipeId) => (
       <div className="border rounded p-4 m-4 " key={recipeId}>
           {ToggleEditRecipe === recipe.id && (
-          <div className="">
+          <div className="flex flex-row">
             <input
               type="text"
-              className="form-control"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               value={recipeName}
               onChange={(e) => setRecipeName(e.target.value)}
               placeholder="Recipe Name"
               id="recipeNameInput"
-            />
-            <label htmlFor="recipeNameInput">Recipe Name</label>            
+            />         
           </div>
             )}
           {ToggleEditRecipe !== recipe.id && (
           <h3 className="text-center mb-4">{ recipe.name }</h3>
           )}
-            <table className="table table-sm">
-              <tbody>
-              {recipe.ingredients.map((ingredient, ingredientId) => (
-                <tr key={ingredientId}>
-                  <td>{ingredient.name}</td>
-                  <td className="text-end">{ingredient.quantity}</td>
-                  <td className="text-start"> {ingredient.unit} </td>
+          <div className="flex-1">           
+            {recipe.ingredients.map((ingredient, ingredientId) => (
+              <div className="flex flex-row items-center p-2 border-bottom border-gray-300">
+                <span className="grow">{ingredient.name}</span>
+                <span className="text-end">{ingredient.quantity}</span>
+                <span className="text-start"> {ingredient.unit} </span>
+                {ToggleEditRecipe === recipe.id && (
+                  <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger m-2">Delete</button>
+                )}
+              </div>
+              ))}
+            {ToggleEditRecipe === recipe.id && (             
+              pendingIngredients.map((ingredient, pendingIngredientId) => (
+                <div className="flex flex-row items-center p-2 border-bottom border-gray-300">
+                  <span className="grow">{ingredient.name}</span>
+                  <span className="text-end">{ingredient.quantity}</span>
+                  <span className="text-start"> {ingredient.unit} </span>
                   {ToggleEditRecipe === recipe.id && (
-                  <td>
-                    <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger">Delete</button>
-                  </td>
+                    <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="btn btn-danger m-2">Delete</button>
                   )}
-                </tr>
-                ))}
-                {ToggleEditRecipe === recipe.id && (             
-                  pendingIngredients.map((ingredient, pendingIngredientId) => (
-                  <tr key={pendingIngredientId}>
-                    <td>{ingredient.name}</td>
-                    <td className="text-end">{ingredient.quantity}{ingredient.unit}</td>
-                    {ToggleEditRecipe === recipe.id && (
-                    <td>
-                      <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="btn btn-danger">Delete</button>
-                    </td>
-                    )}
-                  </tr>
-                  )))}
-              </tbody>
-            </table>
+                </div>
+              )))}
+          </div>
             {ToggleEditRecipe === recipe.id && (
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-                    <div className="form-floating">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={newIngredient.name}
-                        onChange={(e) => 
-                          setNewIngredient((prev) => ({...prev, name:e.target.value}))
-                        }
-                        placeholder="Ingredient"
-                        id="ingredientNameInput"
-                        autoComplete="off"
-                      />
-                      <label htmlFor="ingredientNameInput">Ingredient</label>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="form-floating">
-                      <input
-                        type="number"
-                        className="form-control"
-                        value={newIngredient.quantity}
-                        onChange={(e) => 
-                          setNewIngredient((prev) => ({...prev, quantity:e.target.value}))
-                        }
-                        placeholder="Quantity"
-                        id="ingredientQuantityInput"
-                        autoComplete="off"
-                      />
-                      <label htmlFor="ingredientQuantityInput">Quantity</label>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="form-floating">
-                      <input
-                      type="text"
-                      className="form-control"
-                        value={newIngredient.unit}
-                        onChange={(e) => 
-                          setNewIngredient((prev) => ({...prev, unit:e.target.value}))
-                        }
-                      placeholder="Unit"
-                      id="ingredientUnitInput"
-                      autoComplete="off"
-                      />
-                      <label htmlFor="ingredientUnitInput">Unit</label>
-                    </div>
-                  </td>
-                  <td>
-                    <button type="button" onClick={addPendingIngredients} className="btn">Add Ingredient</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="flex justify-between items-center">
+                <input
+                  type="text"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={newIngredient.name}
+                  onChange={(e) => 
+                    setNewIngredient((prev) => ({...prev, name:e.target.value}))
+                  }
+                  placeholder="Ingredient"
+                  id="ingredientNameInput"
+                  autoComplete="off"
+                />
+                <input
+                  type="number"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={newIngredient.quantity}
+                  onChange={(e) => 
+                    setNewIngredient((prev) => ({...prev, quantity:e.target.value}))
+                  }
+                  placeholder="Quantity"
+                  id="ingredientQuantityInput"
+                  autoComplete="off"
+                />
+                <input
+                type="text"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={newIngredient.unit}
+                  onChange={(e) => 
+                    setNewIngredient((prev) => ({...prev, unit:e.target.value}))
+                  }
+                placeholder="Unit"
+                id="ingredientUnitInput"
+                autoComplete="off"
+                />
+              <button type="button" onClick={addPendingIngredients} className="btn btn-primary w-12 h-12 flex-none">
+                <img
+                  src="plus_icon.svg"
+                  alt="Add Ingredient"
+                />
+              </button>
+            </div>
             )}
               {ToggleEditRecipe === recipe.id && (     
                 <div className="d-flex justify-content-between" role="group">      
@@ -253,7 +231,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                 </div>
               )}
               {ToggleEditRecipe !== recipe.id && (
-              <div className="d-flex justify-content-between" role="group">
+              <div className="flex justify-between mt-2" role="group">
                   <button onClick={() => editRecipeToggle(recipe.id, recipe.name)} type="button" className="btn btn-secondary p-2">
                     <img
                       src="edit_icon.svg"
