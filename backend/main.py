@@ -8,7 +8,7 @@ from uuid import uuid4
 class Ingredient(BaseModel):
     id: str
     name: str 
-    quantity:Optional[int] = None
+    quantity:Optional[float] = None
     unit: Optional[str] = None
 
 class Recipe(BaseModel):
@@ -108,11 +108,9 @@ def get_ingredients():
 # Update an existing recipe given its ID and a recipe object (passed from frontend)
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
-    print(recipe)
     if recipe_id == "new":
         recipe_id = str(uuid4())
         recipe.id = recipe_id
-    print(recipe)
     recipe.ingredients = update_ingredients_db(recipe.ingredients)
     recipe_db[recipe_id] = recipe
     write_db()

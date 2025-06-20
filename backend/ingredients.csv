@@ -1,12 +1,24 @@
 recipe_id,ingredient_id,ingredient_name,quantity,unit
-ed50df8e-d4e6-46ea-87cd-e71be973b748,9ec0f6d7-5d5c-4235-8f9f-62689fd5c475,Beef Mince,500,g
-ed50df8e-d4e6-46ea-87cd-e71be973b748,ccbc4b1c-a072-4cb5-8d8d-777a6c17c667,Onion,1,
-ed50df8e-d4e6-46ea-87cd-e71be973b748,cdb4ba7e-a697-4180-9fdd-af1f548221a5,Celery,1,
-ed50df8e-d4e6-46ea-87cd-e71be973b748,507fb66f-5d16-4499-88a1-a164a5a3d075,Chopped Tomatoes,400,g
-ed50df8e-d4e6-46ea-87cd-e71be973b748,457be9ce-4f4b-40a6-801e-04873a4075a8,Beef Stock,1,cube
-00641878-e30d-471f-af16-f84ffe209c46,4e7c9dbd-9a68-480a-b6a6-ab021b082f0b,Flour,400,g
-00641878-e30d-471f-af16-f84ffe209c46,cc739714-358b-416c-abf2-50d51ad14ab5,Sugar,300,g
-00641878-e30d-471f-af16-f84ffe209c46,9f49dab6-8d73-41da-9873-4988524bf20c,Butter,250,g
-00641878-e30d-471f-af16-f84ffe209c46,07fc54f5-df55-497a-aa76-a48b0c341da1,Apples,5,
-c3607d65-41d2-405b-8a9c-bafbcefbb13e,b43f73ea-8468-4947-bd85-bd1e7da0c23e,Sugar,300,g
-c3607d65-41d2-405b-8a9c-bafbcefbb13e,4e7c9dbd-9a68-480a-b6a6-ab021b082f0b,Flour,400,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,d8ba0d04-eb57-4727-8a7a-85c7092cab31,Olive oil,1.0,tbsp
+ed50df8e-d4e6-46ea-87cd-e71be973b748,ccbc4b1c-a072-4cb5-8d8d-777a6c17c667,Onion,2.0,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,32f200ee-47bf-4c1a-ac9d-724c51b503ea,Carrot,2.0,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,103ba309-37c2-49a8-b0c3-db4e9f4749c8,Celery stick,2.0,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,cc85c306-a11d-4299-a8d0-5ba232a572b7,Garlic clove,2.0,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,6d0a6ec4-1c27-4c7a-b70f-a3ba617b60ad,Beef mince,500.0,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,63db62e8-d54f-4647-a29e-a29a1c79fe3b,Chopped tomatoes,400.0,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,7e6c0c81-8e70-44ff-bc41-5647f0d45c15,Beef stock cube,1.0,
+ed50df8e-d4e6-46ea-87cd-e71be973b748,c3219f72-da83-4811-b2e9-7a19b31f3f0e,Parmesan,75.0,g
+ed50df8e-d4e6-46ea-87cd-e71be973b748,aae1ca35-2934-4201-9a64-c9491dd40a71,Spaghetti,400.0,g
+5220958c-78b7-4cc2-b64b-18c6ced9cda3,07fc54f5-df55-497a-aa76-a48b0c341da1,Apples,1.0,kg
+5220958c-78b7-4cc2-b64b-18c6ced9cda3,b942b0c4-b757-4e8b-9887-78953430bc48,Caster sugar,190.0,g
+5220958c-78b7-4cc2-b64b-18c6ced9cda3,9f49dab6-8d73-41da-9873-4988524bf20c,Butter,225.0,g
+5220958c-78b7-4cc2-b64b-18c6ced9cda3,981d9dc7-673f-4705-a13e-85eeaa97362a,Eggs,2.0,
+5220958c-78b7-4cc2-b64b-18c6ced9cda3,ce981b10-d7c3-46cd-ab35-3c521d9926eb,Plain flour,350.0,g
+8622a271-a065-45da-b7bb-4ff83e5875b8,d8ba0d04-eb57-4727-8a7a-85c7092cab31,Olive oil,2.0,tbsp
+8622a271-a065-45da-b7bb-4ff83e5875b8,ccbc4b1c-a072-4cb5-8d8d-777a6c17c667,Onion,2.0,
+8622a271-a065-45da-b7bb-4ff83e5875b8,cc85c306-a11d-4299-a8d0-5ba232a572b7,Garlic clove,2.0,
+8622a271-a065-45da-b7bb-4ff83e5875b8,6d0a6ec4-1c27-4c7a-b70f-a3ba617b60ad,Beef mince,750.0,g
+8622a271-a065-45da-b7bb-4ff83e5875b8,63db62e8-d54f-4647-a29e-a29a1c79fe3b,Chopped tomatoes,800.0,g
+8622a271-a065-45da-b7bb-4ff83e5875b8,7e6c0c81-8e70-44ff-bc41-5647f0d45c15,Beef stock cube,1.0,
+8622a271-a065-45da-b7bb-4ff83e5875b8,d7f1c328-88d6-4cf6-8656-93f182d23213,Milk,1.5,l
+8622a271-a065-45da-b7bb-4ff83e5875b8,9f49dab6-8d73-41da-9873-4988524bf20c,Butter,100.0,g
