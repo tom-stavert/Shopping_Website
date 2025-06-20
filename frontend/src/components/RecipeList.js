@@ -159,7 +159,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
           )}
           <div className="flex-1">           
             {recipe.ingredients.map((ingredient, ingredientId) => (
-              <div className="flex flex-row items-center p-2 border-bottom border-gray-300">
+              <div className="flex flex-row items-center p-2 border-bottom border-gray-300" key={ingredientId}>
                 <span className="grow">{ingredient.name}</span>
                 <span className="text-end">{ingredient.quantity}</span>
                 <span className="text-start"> {ingredient.unit} </span>

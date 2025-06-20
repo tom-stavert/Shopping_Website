@@ -2,7 +2,7 @@ import uvicorn, copy, csv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 from uuid import uuid4
 
 class Ingredient(BaseModel):
@@ -83,6 +83,18 @@ def update_ingredients_db(ingredients_list):
                     ingredients_db[new_id] = new_ingredient
     return ingredients_list
 
+def clean_shopping_list(recipe_ids):
+    shopping_list = {}
+    for id in recipe_ids:
+        recipe = recipe_db[id]
+        ingredients = recipe.ingredients
+        for ing in ingredients:
+            if ing.id not in shopping_list:
+                shopping_list[ing.id] = copy.copy(ing)
+            elif ing.unit == shopping_list[ing.id].unit:
+                shopping_list[ing.id].quantity += ing.quantity
+    return shopping_list
+
 app = FastAPI()
 
 origins = [
@@ -120,6 +132,11 @@ def update_recipe(recipe_id: str, recipe: Recipe):
 def delete_recipe(recipe_id: str):
     del recipe_db[recipe_id]
     write_db()
+
+@app.post("/create-shopping-list/", response_model=Dict[str, Ingredient])
+def create_shopping_list(added_recipes: List[str]):
+    shopping_list = clean_shopping_list(added_recipes)
+    return shopping_list
 
 if __name__ == "__main__":
     recipe_db, ingredients_db = read_db()

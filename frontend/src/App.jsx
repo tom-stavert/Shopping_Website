@@ -32,7 +32,6 @@ const App = () => {
             path="/shopping-list" 
             element={
               <ShoppingList
-                recipes={recipes}
                 addedRecipes={addedRecipes}
               />
             } 
