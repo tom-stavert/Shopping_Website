@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
 const AddIngredient = ({newIngredient, setNewIngredient, addPendingIngredients}) => {
 
@@ -14,6 +15,17 @@ const AddIngredient = ({newIngredient, setNewIngredient, addPendingIngredients})
     }
   };
 
+  const handleOnSearch = (string, results) => {
+  // onSearch will have as the first callback parameter
+  // the string searched and for the second the results.
+  setNewIngredient((prev) => ({...prev, name:string}))
+  }
+
+  const handleOnSelect = (item) => {
+  // the item selected
+  setNewIngredient((prev) => ({...prev, name:item.name}))
+  }
+
   useEffect(() => {
     fetchIngredientsList();
   }, []);
@@ -21,16 +33,14 @@ const AddIngredient = ({newIngredient, setNewIngredient, addPendingIngredients})
   return (
   <div className="grid grid-rows-2 gap-2 mt-2">
     <div className="row-span-full">
-      <input
-          type="text"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          value={newIngredient.name}
-          onChange={(e) => 
-          setNewIngredient((prev) => ({...prev, name:e.target.value}))
-          }
-          placeholder="Ingredient"
-          id="ingredientNameInput"
-          autoComplete="off"
+      <ReactSearchAutocomplete
+        id="ingredientNameInput"
+        items={ingredientsList}
+        value={newIngredient.name}
+        onSearch={handleOnSearch}
+        onSelect={handleOnSelect}
+        showIcon={false}
+        placeholder="Ingredient"
       />
     </div>
     <div className="flex gap-2">

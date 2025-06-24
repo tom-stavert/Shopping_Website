@@ -152,6 +152,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
               onChange={(e) => setRecipeName(e.target.value)}
               placeholder="Recipe Name"
               id="recipeNameInput"
+              autoComplete='off'
             />         
           </div>
             )}
