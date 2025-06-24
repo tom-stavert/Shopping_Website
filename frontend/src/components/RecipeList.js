@@ -138,7 +138,9 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
     <div className="flex-1 items-center justify-center max-w-md h-screen">     
       {addedRecipes?.length > 0 && (
         <div className="text-center mb-4">
-          <Link to="/shopping-list" className="btn btn-success justify-self-center">Create shopping list!</Link>
+          <Link to="/shopping-list">
+            <button type="button" to="/shopping-list" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create shopping list!</button>
+          </Link>
         </div>
       )}
       {Object.values(recipes).map((recipe, recipeId) => (
@@ -147,7 +149,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
           <div className="flex flex-row">
             <input
               type="text"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               value={recipeName}
               onChange={(e) => setRecipeName(e.target.value)}
               placeholder="Recipe Name"
@@ -157,7 +159,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
           </div>
             )}
           {ToggleEditRecipe !== recipe.id && (
-          <h3 className="text-center mb-4">{ recipe.name }</h3>
+          <h3 className="text-center mb-4 text-2xl font-bold dark:text-white">{ recipe.name }</h3>
           )}
           <div className="flex-1">           
             {recipe.ingredients.map((ingredient, ingredientId) => (
@@ -166,7 +168,14 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                 <span className="text-end">{ingredient.quantity}</span>
                 <span className="text-start"> {ingredient.unit} </span>
                 {ToggleEditRecipe === recipe.id && (
-                  <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="btn btn-danger m-2">Delete</button>
+                  <button onClick={() => handleDeleteIngredient(ingredient, ingredientId, recipe.id)} type="button" className="delete-icon m-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                    <img
+                      src="delete_icon.svg"
+                      alt="Delete Ingredient"
+                      height="40px"
+                      width="40px"
+                    />
+                  </button>
                 )}
               </div>
               ))}
@@ -177,7 +186,14 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
                   <span className="text-end">{ingredient.quantity}</span>
                   <span className="text-start"> {ingredient.unit} </span>
                   {ToggleEditRecipe === recipe.id && (
-                    <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="btn btn-danger m-2">Delete</button>
+                    <button onClick={() => handleDeleteIngredient(ingredient, pendingIngredientId)} type="button" className="delete-icon m-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                      <img
+                        src="delete_icon.svg"
+                        alt="Delete Ingredient"
+                        height="40px"
+                        width="40px"
+                    />
+                    </button>
                   )}
                 </div>
               )))}
@@ -190,48 +206,60 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
             />
             )}
               {ToggleEditRecipe === recipe.id && (     
-                <div className="d-flex justify-content-between mt-2" role="group">      
-                  <button onClick={() => handleCancelRecipeEdit(recipe)} type="submit" className="btn btn-secondary">Cancel</button>
-                  <button onClick={() => handleRecipeSave(recipe, recipeId, pendingIngredients)} type="submit" className="btn btn-success">Save Changes</button>
-                  <button onClick={() => handleDeleteRecipe(recipe.id)} type="submit" className="btn btn-danger">Delete Recipe</button>
+                <div className="flex justify-between mt-2" role="group">
+                  <div>      
+                    <button onClick={() => handleCancelRecipeEdit(recipe)} type="submit" className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Cancel</button>
+                  </div>
+                  <div>
+                    <button onClick={() => handleRecipeSave(recipe, recipeId, pendingIngredients)} type="submit" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Save Changes</button>
+                  </div>
+                  <div>
+                    <button onClick={() => handleDeleteRecipe(recipe.id)} type="submit" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete Recipe</button>
+                  </div>
                 </div>
               )}
               {ToggleEditRecipe !== recipe.id && (
               <div className="flex justify-between mt-2" role="group">
-                  <button onClick={() => editRecipeToggle(recipe.id, recipe.name)} type="button" className="btn btn-secondary p-2">
+                <div>
+                  <button onClick={() => editRecipeToggle(recipe.id, recipe.name)} type="button" className="button-icon text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                     <img
                       src="edit_icon.svg"
                       alt="Edit Recipe"
-                      height="20px"
+                      height="40px"
                       width="40px"
                     />
                   </button>
+                </div>
                   {!addedRecipes.includes(recipe.id) && (
-                  <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-primary p-2">
-                    <img
-                      src="plus_icon.svg"
-                      alt="Add Recipe to Shopping List"
-                      height="20px"
-                      width="40px"
-                    />
-                  </button>
+                  <div>
+                    <button onClick={() => updateShoppingList(recipe.id)} type="button" className="button-icon text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                      <img
+                        src="plus_icon.svg"
+                        alt="Add Recipe to Shopping List"
+                        height="40px"
+                        width="40px"
+                      />
+                    </button>
+                  </div>
                   )}
                   {addedRecipes.includes(recipe.id) && (
-                  <button onClick={() => updateShoppingList(recipe.id)} type="button" className="btn btn-success p-2">
-                    <img
-                      src="tick_icon.svg"
-                      alt="Remove Recipe from Shopping List"
-                      height="20px"
-                      width="40px"
-                    />
-                  </button>
+                  <div>
+                    <button onClick={() => updateShoppingList(recipe.id)} type="button" className="button-icon focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                      <img
+                        src="tick_icon.svg"
+                        alt="Remove Recipe from Shopping List"
+                        height="20px"
+                        width="40px"
+                      />
+                    </button>
+                  </div>
                   )}
               </div>
               )}
       </div>
       ))}
       <div className="text-center mb-4">
-        <button onClick= {() => newRecipe(recipes)} className="btn btn-primary"> Add new recipe </button>
+        <button onClick= {() => newRecipe(recipes)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"> Add new recipe </button>
       </div>
     </div>
   );

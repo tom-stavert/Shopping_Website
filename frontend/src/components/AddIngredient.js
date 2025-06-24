@@ -41,9 +41,10 @@ const AddIngredient = ({newIngredient, setNewIngredient, addPendingIngredients})
         onSelect={handleOnSelect}
         showIcon={false}
         placeholder="Ingredient"
-      />
+        className="autocomplete bg-gray-50 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"      
+        />
     </div>
-    <div className="flex gap-2">
+    <div className="flex gap-2 center-items">
       <div className="">
         <input
           type="number"
@@ -71,7 +72,7 @@ const AddIngredient = ({newIngredient, setNewIngredient, addPendingIngredients})
         />
       </div>
       <div>
-        <button type="button" onClick={addPendingIngredients} className="btn btn-primary w-12 h-12 flex-none">
+        <button type="button" onClick={addPendingIngredients} className="w-12 h-12 flex-none button-icon text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
         <img
               src="plus_icon.svg"
               alt="Add Ingredient"

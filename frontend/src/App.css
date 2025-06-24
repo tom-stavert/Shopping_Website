@@ -51,3 +51,22 @@
 .form-control {
   margin-bottom: 1em
 }
+
+.delete-icon {
+  padding: 1px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin-left: 1em
+}
+
+.button-icon {
+  padding: 1em !important
+}
+
+.autocomplete {
+  padding: 0px !important
+}
+
+.strikethrough:checked + span{
+  text-decoration:line-through
+}
