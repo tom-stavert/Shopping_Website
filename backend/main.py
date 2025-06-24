@@ -138,6 +138,10 @@ def create_shopping_list(added_recipes: List[str]):
     shopping_list = clean_shopping_list(added_recipes)
     return shopping_list
 
+@app.post("/ingredients-list/", response_model=List[Ingredient])
+def ingredients_list():
+    return ingredients_db.values()
+
 if __name__ == "__main__":
     recipe_db, ingredients_db = read_db()
     uvicorn.run(app, host="0.0.0.0", port=8000)

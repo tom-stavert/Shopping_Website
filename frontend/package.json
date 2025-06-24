@@ -17,6 +17,7 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
+    "react-search-autocomplete": "^8.5.2",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
