@@ -6,14 +6,14 @@ import AddIngredient from './AddIngredient';
 const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   
   const emptyIngredient = {
-    id: '',
+    id: 0,
     name: '',
     quantity: 0,
     unit: ''
   };
 
   const emptyRecipe = {
-    id: '',
+    id: 0,
     name: '',
     ingredients: []
   }
@@ -67,8 +67,8 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
 
   const newRecipe = (recipes) => {
     const newRecipe = emptyRecipe;
-    recipes[''] = {...newRecipe, id:'new'}
-    editRecipeToggle("new", "");
+    recipes[''] = {...newRecipe, id:0}
+    editRecipeToggle(0, "");
   }
 
   const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
@@ -87,7 +87,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
     if (recipeName) {
       recipe.name = recipeName
       updateRecipe(recipe.id, recipe);
-      editRecipeToggle(recipeId, recipe.name);
+      editRecipeToggle(recipe.id, recipe.name);
     }
   }
 
@@ -97,7 +97,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   }
 
   const handleDeleteRecipe = async(recipeId) => {
-    if (recipeId !== "new") {
+    if (recipeId !== null) {
       deleteRecipe(recipeId);
     }
     editRecipeToggle(false, "");

@@ -23,7 +23,7 @@ class RecipeDB(SQLModel, table=True):
 
 class IngredientDB(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    name: str = Field()
+    name: str = Field(index=True)
     recipe_links: list[IngredientRecipeLink] = Relationship(back_populates="ingredient")
 
 class Ingredient(BaseModel):
@@ -66,7 +66,36 @@ def read_db():
 
             if ing.IngredientDB.id not in ingredients_db:
                 ingredients_db[ing.IngredientDB.id] = Ingredient(id=ing.IngredientDB.id, name=ing.IngredientDB.name)
-    return recipe_db, ingredients_db        
+    return recipe_db, ingredients_db
+
+def write_db(recipe):
+    with Session(engine) as session:
+
+        if recipe.id == 0:
+            cur_recipe = RecipeDB(name=recipe.name)  #Create new recipe DB object if required
+            session.add(cur_recipe)
+        else:
+            statement = select(RecipeDB).where(RecipeDB.id == recipe.id)
+            results = session.exec(statement).all()
+            cur_recipe = results[0]
+
+        ing_map = set()
+        for i in recipe.ingredients:
+            ing_map.add(i.id)
+
+        for ing in recipe.ingredients:
+            statement = select(IngredientDB).where(IngredientDB.name == ing.name)
+            results = session.exec(statement).all()
+            if len(results) == 0:
+                new_ingredient = IngredientDB(name=ing.name)
+                session.add(new_ingredient)  
+                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)
+                session.add(ingredient_recipe_link)
+            elif ing.id not in ing_map:
+                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)
+                session.add(ingredient_recipe_link)
+            
+        session.commit()
 
 # Updates the ingredients database to add new ingredients from a list, and if the ingredients are already in the database, updates their ID to match
 def update_ingredients_db(ingredients_list):
@@ -113,16 +142,14 @@ app.add_middleware(
 # Get list of recipes
 @app.get("/recipe")
 def get_ingredients():
+    recipe_db, _ = read_db()
     return recipe_db
 
 # Update an existing recipe given its ID and a recipe object (passed from frontend)
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
-    if recipe_id == "new":
-        recipe_id = str(uuid4())
-        recipe.id = recipe_id
-    recipe.ingredients = update_ingredients_db(recipe.ingredients)
-    recipe_db[recipe_id] = recipe
+    write_db(recipe)
+    recipe_db, ingredients_db = read_db()
 
 #Delete an existing recipe by its ID
 @app.post("/recipes/{recipe_id}/delete")
