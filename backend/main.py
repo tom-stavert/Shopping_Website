@@ -19,7 +19,7 @@ class IngredientRecipeLink(SQLModel, table=True):
 class RecipeDB(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field()
-    ingredient_links: list[IngredientRecipeLink] = Relationship(back_populates="recipe")
+    ingredient_links: list[IngredientRecipeLink] = Relationship(back_populates="recipe", cascade_delete=True)
 
 class IngredientDB(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -94,7 +94,13 @@ def write_db(recipe):
         for link in cur_recipe.ingredient_links:
             if link.ingredient_id not in ing_id:            
                 session.delete(link)
-                
+
+        # Purge ingredients without links from DB
+        statement = select(IngredientDB, IngredientRecipeLink).join(IngredientRecipeLink, isouter=True).where(IngredientRecipeLink.ingredient_id == None)
+        result = session.exec(statement).all()
+        for ing in result:
+            session.delete(ing[0])
+
         session.commit()
 
 
@@ -134,12 +140,16 @@ def get_ingredients():
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
     write_db(recipe)
-    recipe_db, ingredients_db = read_db()
+    #recipe_db, ingredients_db = read_db()
 
 #Delete an existing recipe by its ID
 @app.post("/recipes/{recipe_id}/delete")
 def delete_recipe(recipe_id: str):
-    del recipe_db[recipe_id]
+    with Session(engine) as session:
+        statement = select(RecipeDB).where(RecipeDB.id == recipe_id)
+        delete_recipe = session.exec(statement).one()
+        session.delete(delete_recipe)
+        session.commit()
 
 @app.post("/create-shopping-list/", response_model=Dict[str, Ingredient])
 def create_shopping_list(added_recipes: List[str]):

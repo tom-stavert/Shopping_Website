@@ -97,8 +97,13 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   }
 
   const handleDeleteRecipe = async(recipeId) => {
-    if (recipeId !== null) {
-      deleteRecipe(recipeId);
+    if (recipeId !== 0) {
+      try {
+        await deleteRecipe(recipeId);
+      }
+      catch (error) {
+        console.error("Error deleting recipe", error);
+      }     
     }
     editRecipeToggle(false, "");
     fetchRecipe();
