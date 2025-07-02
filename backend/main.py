@@ -74,44 +74,29 @@ def write_db(recipe):
         if recipe.id == 0:
             cur_recipe = RecipeDB(name=recipe.name)  #Create new recipe DB object if required
             session.add(cur_recipe)
+            session.commit()
         else:
             statement = select(RecipeDB).where(RecipeDB.id == recipe.id)
-            results = session.exec(statement).all()
-            cur_recipe = results[0]
+            cur_recipe = session.exec(statement).one()
 
-        ing_map = set()
-        for i in recipe.ingredients:
-            ing_map.add(i.id)
-
-        for ing in recipe.ingredients:
-            statement = select(IngredientDB).where(IngredientDB.name == ing.name)
-            results = session.exec(statement).all()
-            if len(results) == 0:
+        for n, ing in enumerate(recipe.ingredients):
+            if ing.id == 0:
                 new_ingredient = IngredientDB(name=ing.name)
-                session.add(new_ingredient)  
-                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)
-                session.add(ingredient_recipe_link)
-            elif ing.id not in ing_map:
-                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)
-                session.add(ingredient_recipe_link)
-            
+                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)   # Link to recipe with qty
+                session.add_all([new_ingredient, ingredient_recipe_link])    # Add ingredient and link to db
+                session.commit()
+                recipe.ingredients[n].id = new_ingredient.id    # Update the ingredient id in current recipe
+
+        ing_id = set()
+        for ing in recipe.ingredients:
+            ing_id.add(ing.id)
+
+        for link in cur_recipe.ingredient_links:
+            if link.ingredient_id not in ing_id:            
+                session.delete(link)
+                
         session.commit()
 
-# Updates the ingredients database to add new ingredients from a list, and if the ingredients are already in the database, updates their ID to match
-def update_ingredients_db(ingredients_list):
-    for n, ing in enumerate(ingredients_list):    # For each ingredient in the new recipe
-        if ing.id == '':    # If new ingredient
-            for i, db_ing in enumerate(list(ingredients_db.values())):
-                if db_ing.name == ing.name:     # If ingredient with same name exists in the database
-                    ingredients_list[n].id = db_ing.id      # Update id of ingredient to match database  value
-                    break
-                elif i == len(ingredients_db)-1:    # Else, if the end of the ingredients database is reached and no match has been found
-                    new_id = str(uuid4())
-                    ingredients_list[n].id = new_id
-                    new_ingredient = copy.copy(ing)
-                    new_ingredient.quantity=None # remove quantity from ingredient being copied to db (set to default None)
-                    ingredients_db[new_id] = new_ingredient
-    return ingredients_list
 
 def clean_shopping_list(recipe_ids):
     shopping_list = {}

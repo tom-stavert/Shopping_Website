@@ -26,3 +26,4 @@ dist-ssr
 
 # Temp
 backend/sql.py
+backend/test.db
