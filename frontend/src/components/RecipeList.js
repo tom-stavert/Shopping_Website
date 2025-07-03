@@ -33,7 +33,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   };
 
   const addPendingIngredients = () => {
-    if (newIngredient.name) {
+    if (newIngredient.name && newIngredient.quantity > 0) {
       setPendingIngredients([...pendingIngredients, newIngredient]);
       setNewIngredient({...emptyIngredient})
     }

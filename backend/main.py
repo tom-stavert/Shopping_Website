@@ -105,6 +105,7 @@ def write_db(recipe):
 
 
 def clean_shopping_list(recipe_ids):
+    recipe_db, _ = read_db()
     shopping_list = {}
     for id in recipe_ids:
         recipe = recipe_db[id]
@@ -140,7 +141,6 @@ def get_ingredients():
 @app.post("/recipes/{recipe_id}/update")
 def update_recipe(recipe_id: str, recipe: Recipe):
     write_db(recipe)
-    #recipe_db, ingredients_db = read_db()
 
 #Delete an existing recipe by its ID
 @app.post("/recipes/{recipe_id}/delete")
@@ -151,13 +151,14 @@ def delete_recipe(recipe_id: str):
         session.delete(delete_recipe)
         session.commit()
 
-@app.post("/create-shopping-list/", response_model=Dict[str, Ingredient])
-def create_shopping_list(added_recipes: List[str]):
+@app.post("/create-shopping-list/", response_model=Dict[int, Ingredient])
+def create_shopping_list(added_recipes: List[int]):
     shopping_list = clean_shopping_list(added_recipes)
     return shopping_list
 
 @app.post("/ingredients-list/", response_model=List[Ingredient])
 def ingredients_list():
+    _,  ingredients_db = read_db()
     return ingredients_db.values()
 
 if __name__ == "__main__":
