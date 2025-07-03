@@ -6,14 +6,14 @@ import AddIngredient from './AddIngredient';
 const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   
   const emptyIngredient = {
-    id: '',
+    id: 0,
     name: '',
     quantity: 0,
     unit: ''
   };
 
   const emptyRecipe = {
-    id: '',
+    id: 0,
     name: '',
     ingredients: []
   }
@@ -33,7 +33,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   };
 
   const addPendingIngredients = () => {
-    if (newIngredient.name) {
+    if (newIngredient.name && newIngredient.quantity > 0) {
       setPendingIngredients([...pendingIngredients, newIngredient]);
       setNewIngredient({...emptyIngredient})
     }
@@ -47,7 +47,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
 
   const handleDeleteIngredient = (ingredient, ingredientId, recipeId) => {
     // If the deleted ingredient was a pending ingredient, remove it
-    if (ingredient.id === '') {   
+    if (ingredient.id === 0) {   
       setPendingIngredients(prev => prev.filter((_, i) => i !== ingredientId));
     }
     // If ingredient was in recipe already, set to delete on save and remove locally
@@ -67,8 +67,8 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
 
   const newRecipe = (recipes) => {
     const newRecipe = emptyRecipe;
-    recipes[''] = {...newRecipe, id:'new'}
-    editRecipeToggle("new", "");
+    recipes[''] = {...newRecipe, id:0}
+    editRecipeToggle(0, "");
   }
 
   const handleRecipeSave = (recipe, recipeId, pendingIngredients) => {
@@ -87,7 +87,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
     if (recipeName) {
       recipe.name = recipeName
       updateRecipe(recipe.id, recipe);
-      editRecipeToggle(recipeId, recipe.name);
+      editRecipeToggle(recipe.id, recipe.name);
     }
   }
 
@@ -97,8 +97,13 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
   }
 
   const handleDeleteRecipe = async(recipeId) => {
-    if (recipeId !== "new") {
-      deleteRecipe(recipeId);
+    if (recipeId !== 0) {
+      try {
+        await deleteRecipe(recipeId);
+      }
+      catch (error) {
+        console.error("Error deleting recipe", error);
+      }     
     }
     editRecipeToggle(false, "");
     fetchRecipe();
