@@ -104,14 +104,18 @@ def write_db(recipe):
             if link.ingredient_id not in ing_id:            
                 session.delete(link)
 
-        # Purge ingredients without links from DB
+        session.commit()
+    
+    clean_ingredients()
+
+def clean_ingredients():
+    # Purge ingredients without links from DB
+    with Session(engine) as session:
         statement = select(IngredientDB, IngredientRecipeLink).join(IngredientRecipeLink, isouter=True).where(IngredientRecipeLink.ingredient_id == None)
         result = session.exec(statement).all()
         for ing in result:
             session.delete(ing[0])
-
         session.commit()
-
 
 def clean_shopping_list(recipe_ids):
     recipe_db, _ = read_db()
@@ -159,6 +163,7 @@ def delete_recipe(recipe_id: str):
         delete_recipe = session.exec(statement).one()
         session.delete(delete_recipe)
         session.commit()
+    clean_ingredients()
 
 @app.post("/create-shopping-list/", response_model=Dict[int, Ingredient])
 def create_shopping_list(added_recipes: List[int]):
