@@ -78,14 +78,23 @@ def write_db(recipe):
         else:
             statement = select(RecipeDB).where(RecipeDB.id == recipe.id)
             cur_recipe = session.exec(statement).one()
+            cur_recipe.name = recipe.name
 
         for n, ing in enumerate(recipe.ingredients):
             if ing.id == 0:
-                new_ingredient = IngredientDB(name=ing.name)
-                ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)   # Link to recipe with qty
-                session.add_all([new_ingredient, ingredient_recipe_link])    # Add ingredient and link to db
-                session.commit()
-                recipe.ingredients[n].id = new_ingredient.id    # Update the ingredient id in current recipe
+                statement = select(IngredientDB).where(IngredientDB.name == ing.name)
+                result = session.exec(statement).all()
+                if len(result) > 0:
+                    recipe.ingredients[n].id = result[0].id
+                    ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=result[0], quantity=ing.quantity, unit=ing.unit)
+                    session.add(ingredient_recipe_link)
+                    session.commit()
+                else:
+                    new_ingredient = IngredientDB(name=ing.name)
+                    ingredient_recipe_link = IngredientRecipeLink(recipe=cur_recipe, ingredient=new_ingredient, quantity=ing.quantity, unit=ing.unit)   # Link to recipe with qty
+                    session.add_all([new_ingredient, ingredient_recipe_link])    # Add ingredient and link to db
+                    session.commit()
+                    recipe.ingredients[n].id = new_ingredient.id    # Update the ingredient id in current recipe
 
         ing_id = set()
         for ing in recipe.ingredients:

@@ -47,7 +47,7 @@ const RecipeList = ({recipes, setRecipes, addedRecipes, setAddedRecipes}) => {
 
   const handleDeleteIngredient = (ingredient, ingredientId, recipeId) => {
     // If the deleted ingredient was a pending ingredient, remove it
-    if (ingredient.id === '') {   
+    if (ingredient.id === 0) {   
       setPendingIngredients(prev => prev.filter((_, i) => i !== ingredientId));
     }
     // If ingredient was in recipe already, set to delete on save and remove locally
